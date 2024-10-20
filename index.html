@@ -5,6 +5,10 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Snek Game</title>
     <style>
+        body {
+            background: #000000;
+            color: #ffffff;
+        }
         canvas {
             background: #ffffff;
             display: block;
@@ -23,7 +27,7 @@
         let snake = [{x: 100, y: 50}, {x: 90, y: 50}, {x: 80, y: 50}];
         let snakeDirection = "RIGHT";
         let changeDirection = "RIGHT";
-        let speed = 150;
+        let speed = 100;
         let score = 0;
         let level = 1;
 
@@ -75,7 +79,7 @@
             ctx.fillRect(food.x, food.y, GRID_SIZE, GRID_SIZE);
             ctx.fillStyle = "#ffffff";
             ctx.font = "12px Courier";
-            ctx.fillText("E", food.x + 2, food.y + 10);
+            ctx.fillText("E", food.x + 2, food.y + GRID_SIZE / 2 + 4);
         }
 
         function drawChair() {
@@ -126,10 +130,20 @@
         }
 
         function gameOver() {
+            burnSnake();
             ctx.fillStyle = "#ff1493";
             ctx.font = "20px Courier";
-            ctx.fillText("Nice try snek, but the $ENT will not be yours today.", canvas.width / 2 - 180, canvas.height / 4);
+            ctx.fillText("Nice try snek, but the $ENT will not be yours today.", canvas.width / 2 - 150, canvas.height / 4);
             ctx.fillText("Press Enter to play again or Esc to quit.", canvas.width / 2 - 150, canvas.height / 4 + 30);
+        }
+
+        function burnSnake() {
+            snake.forEach((segment, index) => {
+                setTimeout(() => {
+                    ctx.fillStyle = ORANGE;
+                    ctx.fillRect(segment.x, segment.y, GRID_SIZE, GRID_SIZE);
+                }, index * 50);
+            });
         }
 
         function resetGame() {
@@ -171,3 +185,4 @@
     </script>
 </body>
 </html>
+
