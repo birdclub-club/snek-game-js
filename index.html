@@ -20,6 +20,13 @@
 <body>
     <canvas id="gameCanvas" width="500" height="600"></canvas>
     <script>
+        const scoreElement = document.createElement('div');
+        scoreElement.style.position = 'absolute';
+        scoreElement.style.top = '10px';
+        scoreElement.style.left = '10px';
+        scoreElement.style.color = '#ffffff';
+        scoreElement.style.font = '16px Courier';
+        document.body.appendChild(scoreElement);
         const canvas = document.getElementById("gameCanvas");
         const ctx = canvas.getContext("2d");
 
@@ -58,6 +65,21 @@
 
         function moveSnake() {
             const head = {...snake[0]};
+            if (changeDirection === "UP") head.y -= GRID_SIZE;
+            if (changeDirection === "DOWN") head.y += GRID_SIZE;
+            if (changeDirection === "LEFT") head.x -= GRID_SIZE;
+            if (changeDirection === "RIGHT") head.x += GRID_SIZE;
+            snake.unshift(head);
+
+            if (head.x === food.x && head.y === food.y) {
+                score++;
+                updateScore();
+                if (score >= 20 && level === 1) level = 2;
+                generateFood();
+            } else {
+                snake.pop();
+            }
+        };
             if (changeDirection === "UP") head.y -= GRID_SIZE;
             if (changeDirection === "DOWN") head.y += GRID_SIZE;
             if (changeDirection === "LEFT") head.x -= GRID_SIZE;
@@ -157,6 +179,14 @@
             speed = 150;
             score = 0;
             level = 1;
+            updateScore();
+            generateFood();
+        }, {x: 90, y: 50}, {x: 80, y: 50}];
+            snakeDirection = "RIGHT";
+            changeDirection = "RIGHT";
+            speed = 150;
+            score = 0;
+            level = 1;
             generateFood();
         }
 
@@ -180,12 +210,32 @@
             }, speed);
         }
 
+            setTimeout(function onTick() {
+                ctx.clearRect(0, 0, canvas.width, canvas.height);
+                moveSnake();
+                drawSnake();
+                drawFood();
+                if (level === 2) {
+                    moveChair();
+                    drawChair();
+                }
+                snakeDirection = changeDirection;
+                main();
+            }, speed);
+        }
+
         document.addEventListener("keydown", changeSnakeDirection);
         document.addEventListener("keydown", function(event) {
             if (event.keyCode === 13) resetGame();
         });
 
         main();
+    function updateScore() {
+            scoreElement.textContent = `Score: ${score}`;
+        }
+
+        updateScore();
     </script>
 </body>
 </html>
+
