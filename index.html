@@ -68,37 +68,6 @@
                 score++;
                 if (score >= 20 && level === 1) level = 2;
                 generateFood();
-                // Make snake flash pink briefly when it eats food
-                snake.forEach((segment, index) => {
-                    setTimeout(() => {
-                        ctx.fillStyle = "#ff1493";
-                        ctx.fillRect(segment.x, segment.y, GRID_SIZE, GRID_SIZE);
-                        setTimeout(() => {
-                            ctx.fillStyle = index === 0 ? "#00ff00" : "#00cc00";
-                            ctx.fillRect(segment.x, segment.y, GRID_SIZE, GRID_SIZE);
-                        }, 100);
-                    }, index * 20);
-                });
-            } else {
-                snake.pop();
-            }
-        }, 100);
-                    }, index * 20);
-                });
-            } else {
-                snake.pop();
-            }
-        };
-            if (changeDirection === "UP") head.y -= GRID_SIZE;
-            if (changeDirection === "DOWN") head.y += GRID_SIZE;
-            if (changeDirection === "LEFT") head.x -= GRID_SIZE;
-            if (changeDirection === "RIGHT") head.x += GRID_SIZE;
-            snake.unshift(head);
-
-            if (head.x === food.x && head.y === food.y) {
-                score++;
-                if (score >= 20 && level === 1) level = 2;
-                generateFood();
             } else {
                 snake.pop();
             }
@@ -165,38 +134,24 @@
 
         function gameOver() {
             burnSnake();
-            setTimeout(() => {
-                ctx.fillStyle = "#ff1493";
-                ctx.drawImage(chairImage, canvas.width / 2 - 25, canvas.height / 2 - 25, 50, 50);
-                ctx.font = "20px Courier";
-                ctx.fillText("Nice try snek, but the $ENT will not be yours today.", canvas.width / 2 - 200, canvas.height / 4);
-                ctx.fillText("Press Enter to play again or Esc to quit.", canvas.width / 2 - 200, canvas.height / 4 + 40);
-            }, snake.length * 50);
+            ctx.fillStyle = "#ff1493";
+            ctx.drawImage(chairImage, canvas.width / 2 - 25, canvas.height / 2 - 25, 50, 50);
+            ctx.font = "20px Courier";
+            ctx.fillText("Nice try snek, but the $ENT will not be yours today.", canvas.width / 2 - 200, canvas.height / 4);
+            ctx.fillText("Press Enter to play again or Esc to quit.", canvas.width / 2 - 200, canvas.height / 4 + 40);
         }
 
         function burnSnake() {
             snake.forEach((segment, index) => {
                 setTimeout(() => {
-                    ctx.fillStyle = "#ff4500";
+                    ctx.fillStyle = ORANGE;
                     ctx.fillRect(segment.x, segment.y, GRID_SIZE, GRID_SIZE);
                 }, index * 50);
-            });
-        }, index * 50);
-            });
-        }
-        }, index * 50);
             });
         }
 
         function resetGame() {
             snake = [{x: 100, y: 50}, {x: 90, y: 50}, {x: 80, y: 50}];
-            snakeDirection = "RIGHT";
-            changeDirection = "RIGHT";
-            speed = 100;
-            score = 0;
-            level = 1;
-            generateFood();
-        }, {x: 90, y: 50}, {x: 80, y: 50}];
             snakeDirection = "RIGHT";
             changeDirection = "RIGHT";
             speed = 150;
@@ -225,20 +180,6 @@
             }, speed);
         }
 
-            setTimeout(function onTick() {
-                ctx.clearRect(0, 0, canvas.width, canvas.height);
-                moveSnake();
-                drawSnake();
-                drawFood();
-                if (level === 2) {
-                    moveChair();
-                    drawChair();
-                }
-                snakeDirection = changeDirection;
-                main();
-            }, speed);
-        }
-
         document.addEventListener("keydown", changeSnakeDirection);
         document.addEventListener("keydown", function(event) {
             if (event.keyCode === 13) resetGame();
@@ -248,4 +189,5 @@
     </script>
 </body>
 </html>
+
 
