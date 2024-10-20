@@ -1,0 +1,173 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Snek Game</title>
+    <style>
+        canvas {
+            background: #ffffff;
+            display: block;
+            margin: auto;
+            border: 2px solid black;
+        }
+    </style>
+</head>
+<body>
+    <canvas id="gameCanvas" width="500" height="600"></canvas>
+    <script>
+        const canvas = document.getElementById("gameCanvas");
+        const ctx = canvas.getContext("2d");
+
+        const GRID_SIZE = 10;
+        let snake = [{x: 100, y: 50}, {x: 90, y: 50}, {x: 80, y: 50}];
+        let snakeDirection = "RIGHT";
+        let changeDirection = "RIGHT";
+        let speed = 150;
+        let score = 0;
+        let level = 1;
+
+        // Food properties
+        let food = {
+            x: Math.floor(Math.random() * (canvas.width / GRID_SIZE)) * GRID_SIZE,
+            y: Math.floor(Math.random() * (canvas.height / GRID_SIZE)) * GRID_SIZE
+        };
+
+        // Level 2 properties
+        let chair = {
+            x: Math.floor(Math.random() * (canvas.width - 50)),
+            y: Math.floor(Math.random() * (canvas.height - 50)),
+            dx: 3,
+            dy: 3,
+        };
+
+        function drawSnake() {
+            snake.forEach((segment, index) => {
+                ctx.fillStyle = index === 0 ? "#00ff00" : "#00cc00";
+                ctx.fillRect(segment.x, segment.y, GRID_SIZE, GRID_SIZE);
+            });
+        }
+
+        function moveSnake() {
+            const head = {...snake[0]};
+            if (changeDirection === "UP") head.y -= GRID_SIZE;
+            if (changeDirection === "DOWN") head.y += GRID_SIZE;
+            if (changeDirection === "LEFT") head.x -= GRID_SIZE;
+            if (changeDirection === "RIGHT") head.x += GRID_SIZE;
+            snake.unshift(head);
+
+            if (head.x === food.x && head.y === food.y) {
+                score++;
+                if (score >= 20 && level === 1) level = 2;
+                generateFood();
+            } else {
+                snake.pop();
+            }
+        }
+
+        function generateFood() {
+            food.x = Math.floor(Math.random() * (canvas.width / GRID_SIZE)) * GRID_SIZE;
+            food.y = Math.floor(Math.random() * (canvas.height / GRID_SIZE)) * GRID_SIZE;
+        }
+
+        function drawFood() {
+            ctx.fillStyle = "#ff1493";
+            ctx.fillRect(food.x, food.y, GRID_SIZE, GRID_SIZE);
+            ctx.fillStyle = "#ffffff";
+            ctx.font = "12px Courier";
+            ctx.fillText("E", food.x + 2, food.y + 10);
+        }
+
+        function drawChair() {
+            ctx.fillStyle = "#ffa500";
+            ctx.fillRect(chair.x, chair.y, 50, 50);
+        }
+
+        function moveChair() {
+            chair.x += chair.dx;
+            chair.y += chair.dy;
+
+            if (chair.x <= 0 || chair.x >= canvas.width - 50) chair.dx *= -1;
+            if (chair.y <= 0 || chair.y >= canvas.height - 50) chair.dy *= -1;
+        }
+
+        function changeSnakeDirection(event) {
+            const keyPressed = event.keyCode;
+            if (keyPressed === 37 && snakeDirection !== "RIGHT") changeDirection = "LEFT";
+            if (keyPressed === 38 && snakeDirection !== "DOWN") changeDirection = "UP";
+            if (keyPressed === 39 && snakeDirection !== "LEFT") changeDirection = "RIGHT";
+            if (keyPressed === 40 && snakeDirection !== "UP") changeDirection = "DOWN";
+        }
+
+        function checkCollision() {
+            const head = snake[0];
+
+            // Check if snake hits the wall
+            if (head.x < 0 || head.x >= canvas.width || head.y < 0 || head.y >= canvas.height) {
+                return true;
+            }
+
+            // Check if snake hits itself
+            for (let i = 1; i < snake.length; i++) {
+                if (head.x === snake[i].x && head.y === snake[i].y) {
+                    return true;
+                }
+            }
+
+            // Check if snake collides with the chair in level 2
+            if (level === 2) {
+                if (head.x < chair.x + 50 && head.x + GRID_SIZE > chair.x &&
+                    head.y < chair.y + 50 && head.y + GRID_SIZE > chair.y) {
+                    return true;
+                }
+            }
+
+            return false;
+        }
+
+        function gameOver() {
+            ctx.fillStyle = "#ff1493";
+            ctx.font = "20px Courier";
+            ctx.fillText("Nice try snek, but the $ENT will not be yours today.", canvas.width / 2 - 180, canvas.height / 4);
+            ctx.fillText("Press Enter to play again or Esc to quit.", canvas.width / 2 - 150, canvas.height / 4 + 30);
+        }
+
+        function resetGame() {
+            snake = [{x: 100, y: 50}, {x: 90, y: 50}, {x: 80, y: 50}];
+            snakeDirection = "RIGHT";
+            changeDirection = "RIGHT";
+            speed = 150;
+            score = 0;
+            level = 1;
+            generateFood();
+        }
+
+        function main() {
+            if (checkCollision()) {
+                gameOver();
+                return;
+            }
+
+            setTimeout(function onTick() {
+                ctx.clearRect(0, 0, canvas.width, canvas.height);
+                moveSnake();
+                drawSnake();
+                drawFood();
+                if (level === 2) {
+                    moveChair();
+                    drawChair();
+                }
+                snakeDirection = changeDirection;
+                main();
+            }, speed);
+        }
+
+        document.addEventListener("keydown", changeSnakeDirection);
+        document.addEventListener("keydown", function(event) {
+            if (event.keyCode === 13) resetGame();
+        });
+
+        main();
+    </script>
+</body>
+</html>
