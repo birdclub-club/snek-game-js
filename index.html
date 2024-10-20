@@ -138,15 +138,17 @@
             ctx.drawImage(chairImage, canvas.width / 2 - 25, canvas.height / 2 - 25, 50, 50);
             ctx.font = "12px Courier";
             ctx.fillText("Nice try snek, but the $ENT will not be yours today.", canvas.width / 2 - 150, canvas.height / 4);
-            ctx.fillText("Press Enter to play again or Esc to quit.", canvas.width / 2 - 150, canvas.height / 4 + 40);
+            ctx.fillText("Refresh to try again.", canvas.width / 2 - 150, canvas.height / 4 + 40);
         }
 
         function burnSnake() {
             snake.forEach((segment, index) => {
                 setTimeout(() => {
-                    ctx.fillStyle = ORANGE;
+                    ctx.fillStyle = "#ff4500"; // Set color to orange to simulate burning
                     ctx.fillRect(segment.x, segment.y, GRID_SIZE, GRID_SIZE);
                 }, index * 50);
+            });
+        }, index * 50);
             });
         }
 
@@ -189,6 +191,7 @@
     </script>
 </body>
 </html>
+
 
 
 
