@@ -87,17 +87,7 @@
         }
 
         function drawChair() {
-            // Draw a simple chair shape
-            ctx.fillStyle = "#964B00"; // Brown color for the chair legs and backrest
-            // Draw legs
-            ctx.fillRect(chair.x, chair.y + 30, 10, 20); // Left leg
-            ctx.fillRect(chair.x + 40, chair.y + 30, 10, 20); // Right leg
-            // Draw seat
-            ctx.fillStyle = "#FFD700"; // Golden color for the seat
-            ctx.fillRect(chair.x, chair.y + 20, 50, 10);
-            // Draw backrest
-            ctx.fillStyle = "#964B00";
-            ctx.fillRect(chair.x, chair.y, 50, 10);
+            ctx.drawImage(chairImage, chair.x, chair.y, 50, 50);
         }
 
         function moveChair() {
@@ -145,7 +135,7 @@
         function gameOver() {
             burnSnake();
             ctx.fillStyle = "#ff1493";
-            drawChair();
+            ctx.drawImage(chairImage, canvas.width / 2 - 25, canvas.height / 2 - 25, 50, 50);
             ctx.font = "20px Courier";
             ctx.fillText("Nice try snek, but the $ENT will not be yours today.", canvas.width / 2 - 150, canvas.height / 4);
             ctx.fillText("Press Enter to play again or Esc to quit.", canvas.width / 2 - 150, canvas.height / 4 + 30);
@@ -199,6 +189,7 @@
     </script>
 </body>
 </html>
+
 
 
 
